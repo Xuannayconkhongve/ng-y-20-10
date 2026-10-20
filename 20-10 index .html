@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            position: relative;
+            background: #000;
+            color: #fff;
+        }
+
+        /* Ambient background scene slider with realistic nature photography */
+        .scene-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+            opacity: 0;
+            transform: scale(1.05);
+            z-index: 1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .scene-container.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 2;
+        }
+
+        /* Dark overlay for optimal text & gift readability over natural images */
+        .scene-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.65) 100%);
+        }
+
+        /* Scene 1: Cherry Blossom Nature */
+        .scene-1 {
+            background-image: url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1920&q=80');
+        }
+
+        /* Scene 2: Magical Night Forest & Glowing Lights */
+        .scene-2 {
+            background-image: url('https://images.unsplash.com/photo-1511497584788-876761c11969?auto=format&fit=crop&w=1920&q=80');
+        }
+
+        /* Scene 3: Sunset Ocean Beach */
+        .scene-3 {
+            background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');
+        }
+
+        /* Scene 4: Romantic Night Sky & Mountains */
+        .scene-4 {
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
+        }
+
+        /* Scene 5: Vibrant Sunflower Field */
+        .scene-5 {
+            background-image: url('https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=1920&q=80');
+        }
+
+        /* Scene 6: Snow Castle Nature Landscape */
+        .scene-6 {
+            background-image: url('https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=1920&q=80');
+        }
+
+        /* Canvas Particle Layer */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Header Info */
+        .header-title {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            pointer-events: none;
+            width: 90%;
+        }
+
+        .header-title h1 {
+            font-size: 2.2rem;
+            color: #fff;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #ffe6f0, #ffd1dc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.95);
+            margin-top: 5px;
+            font-weight: 400;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
+        /* Navigation Arrows */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 55px;
+            height: 55px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 15;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .nav-arrow:hover {
+            background: rgba(255, 64, 129, 0.7);
+            transform: translateY(-50%) scale(1.12);
+            border-color: #fff;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.6);
+        }
+
+        .nav-arrow.left { left: 20px; }
+        .nav-arrow.right { right: 20px; }
+
+        /* Scene indicator badges */
+        .scene-dots {
+            position: absolute;
+            top: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .dot.active {
+            background: #ff4081;
+            width: 28px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ff4081;
+        }
+
+        /* Gift Grid Container (5 Gifts) */
+        .gifts-container {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            z-index: 10;
+            width: 95%;
+            max-width: 1100px;
+            flex-wrap: wrap;
+        }
+
+        .gift-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-wrapper:hover {
+            transform: translateY(-10px) scale(1.08);
+        }
+
+        .gift-tag {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #fff;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+        }
+
+        .gift-wrapper:hover .gift-tag {
+            background: #ff4081;
+            border-color: #fff;
+            box-shadow: 0 0 18px rgba(255, 64, 129, 0.8);
+        }
+
+        /* 3D Gift Box */
+        .gift-box {
+            width: 85px;
+            height: 85px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: floatGift 3s infinite ease-in-out;
+        }
+
+        @keyframes floatGift {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+
+        .gift-box .body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .gift-box .ribbon-v {
+            position: absolute;
+            width: 18px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, #ffd700, #fff8dc, #ffd700);
+            z-index: 2;
+        }
+
+        .gift-box .ribbon-h {
+            position: absolute;
+            height: 18px;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(to bottom, #ffd700, #fff8dc, #ffd700);
+            z-index: 2;
+        }
+
+        .gift-box .bow {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 22px;
+            background: #ffd700;
+            border-radius: 50% 50% 0 0;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .gift-box .bow::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #e6b800;
+            border-radius: 50%;
+            left: -8px;
+            top: 2px;
+        }
+
+        .gift-box .bow::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #e6b800;
+            border-radius: 50%;
+            right: -8px;
+            top: 2px;
+        }
+
+        /* Color variations for 5 gifts */
+        .gift-1 .body { background: linear-gradient(135deg, #ff4e50, #f9d423); } /* Mẹ */
+        .gift-2 .body { background: linear-gradient(135deg, #8e2de2, #4a00e0); } /* Bà */
+        .gift-3 .body { background: linear-gradient(135deg, #f857a6, #ff5858); } /* Cô/Thím */
+        .gift-4 .body { background: linear-gradient(135deg, #11998e, #38ef7d); } /* Bác */
+        .gift-5 .body { background: linear-gradient(135deg, #ff758c, #ff7eb3); } /* Chị Em Gái */
+
+        /* Greeting Card Modal Overlay */
+        .card-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.8);
+        }
+
+        .card-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+
+        /* Card Box Container */
+        .card-content {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            width: 90%;
+            max-width: 520px;
+            padding: 40px 35px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,105,180,0.5);
+            text-align: center;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            animation: floatCard 4s ease-in-out infinite;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #ff4081;
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            background: linear-gradient(45deg, #ff4081, #ff80ab);
+            color: #fff;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(255,64,129,0.3);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: #d81b60;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .card-message {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 25px;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .card-footer {
+            font-style: italic;
+            color: #ad1457;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Sound Toggle Button */
+        .audio-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            z-index: 15;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .audio-btn:hover {
+            background: rgba(255, 64, 129, 0.7);
+            transform: scale(1.1);
+        }
+
+        /* Responsive Fixes */
+        @media (max-width: 768px) {
+            .header-title h1 { font-size: 1.5rem; }
+            .header-title p { font-size: 0.85rem; }
+            .gifts-container { bottom: 25px; gap: 8px; }
+            .gift-box { width: 60px; height: 60px; }
+            .gift-tag { font-size: 0.72rem; padding: 4px 8px; margin-bottom: 6px; }
+            .nav-arrow { width: 40px; height: 40px; font-size: 18px; }
+            .nav-arrow.left { left: 8px; }
+            .nav-arrow.right { right: 8px; }
+            .card-content { padding: 30px 20px; }
+            .card-title { font-size: 1.4rem; }
+            .card-message { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle Effect Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Header Section -->
+    <div class="header-title">
+        <h1>CHÚC MỪNG NGÀY PHỤ NỮ VIỆT NAM 20/10</h1>
+        <p id="sceneName">Cảnh 1: Vườn Anh Đào Rạng Rỡ</p>
+    </div>
+
+    <!-- Scene Selector Dots -->
+    <div class="scene-dots" id="sceneDots"></div>
+
+    <!-- Navigation Arrows -->
+    <div class="nav-arrow left" id="prevBtn">&#10094;</div>
+    <div class="nav-arrow right" id="nextBtn">&#10095;</div>
+
+    <!-- Background Scenes with Natural Landscapes -->
+    <div class="scene-container scene-1 active"></div>
+    <div class="scene-container scene-2"></div>
+    <div class="scene-container scene-3"></div>
+    <div class="scene-container scene-4"></div>
+    <div class="scene-container scene-5"></div>
+    <div class="scene-container scene-6"></div>
+
+    <!-- Audio Control Button -->
+    <div class="audio-btn" id="audioBtn" title="Bật/Tắt Nhạc Nền">🎵</div>
+
+    <!-- 5 Gift Boxes -->
+    <div class="gifts-container">
+        <!-- Gift 1: Mẹ -->
+        <div class="gift-wrapper" onclick="openGift(0)">
+            <div class="gift-tag">💖 Gửi Mẹ Yêu Thương</div>
+            <div class="gift-box gift-1">
+                <div class="bow"></div>
+                <div class="body">
+                    <div class="ribbon-v"></div>
+                    <div class="ribbon-h"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift 2: Bà -->
+        <div class="gift-wrapper" onclick="openGift(1)">
+            <div class="gift-tag">👵 Gửi Bà Kính Yêu</div>
+            <div class="gift-box gift-2">
+                <div class="bow"></div>
+                <div class="body">
+                    <div class="ribbon-v"></div>
+                    <div class="ribbon-h"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift 3: Các Cô, Thím -->
+        <div class="gift-wrapper" onclick="openGift(2)">
+            <div class="gift-tag">🌺 Gửi Các Cô, Thím</div>
+            <div class="gift-box gift-3">
+                <div class="bow"></div>
+                <div class="body">
+                    <div class="ribbon-v"></div>
+                    <div class="ribbon-h"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift 4: Các Bác -->
+        <div class="gift-wrapper" onclick="openGift(3)">
+            <div class="gift-tag">🌷 Gửi Các Bác Trân Quý</div>
+            <div class="gift-box gift-4">
+                <div class="bow"></div>
+                <div class="body">
+                    <div class="ribbon-v"></div>
+                    <div class="ribbon-h"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift 5: Các Chị Em Gái -->
+        <div class="gift-wrapper" onclick="openGift(4)">
+            <div class="gift-tag">👭 Gửi Các Chị Em Gái</div>
+            <div class="gift-box gift-5">
+                <div class="bow"></div>
+                <div class="body">
+                    <div class="ribbon-v"></div>
+                    <div class="ribbon-h"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Modal -->
+    <div class="card-modal" id="cardModal">
+        <div class="card-content">
+            <span class="close-btn" onclick="closeCard()">&times;</span>
+            <div class="card-badge" id="modalBadge">Gửi Mẹ Yêu Thương</div>
+            <h2 class="card-title" id="modalTitle">Chúc Mừng Ngày 20/10</h2>
+            <p class="card-message" id="modalMessage">Lời chúc sẽ hiển thị ở đây...</p>
+            <div class="card-footer">❤️ Chúc Mọi Điều Tốt Đẹp Nhất ❤️</div>
+        </div>
+    </div>
+
+    <script>
+        // Scenes Configuration
+        const scenes = [
+            { name: "Cảnh 1: Vườn Anh Đào Rạng Rỡ 🌸", color: "#ffb6c1" },
+            { name: "Cảnh 2: Đêm Rừng Đom Đóm Lung Linh 🍃", color: "#adff2f" },
+            { name: "Cảnh 3: Biển Hoàng Hôn Ấm Áp 🌅", color: "#ffd700" },
+            { name: "Cảnh 4: Đêm Núi Mưa Sao Băng 🌌", color: "#ffffff" },
+            { name: "Cảnh 5: Cánh Đồng Hướng Dương Rực Rỡ 🌻", color: "#ff8c00" },
+            { name: "Cảnh 6: Cảnh Tuyết Núi Rừng Cổ Tích ❄️", color: "#e0ffff" }
+        ];
+
+        // 5 Specific Greeting Messages
+        const giftMessages = [
+            {
+                badge: "💖 Gửi Mẹ Yêu Thương",
+                title: "Tri Ân Công Ơn Bao La Của Mẹ",
+                message: "Nhân ngày Phụ nữ Việt Nam 20/10, con xin kính chúc Mẹ luôn dồi dào sức khỏe, tràn ngập niềm vui và luôn nở nụ cười hạnh phúc. Cảm ơn Mẹ vì những vất vả, hy sinh và tình yêu thương vô bờ bến dành cho con suốt những năm tháng qua!"
+            },
+            {
+                badge: "👵 Gửi Bà Kính Yêu",
+                title: "Kính Chúc Bà Bình An & Trường Thọ",
+                message: "Kính chúc Bà yêu quý ngày 20/10 luôn khỏe mạnh, an nhiên, tâm hồn luôn vui vẻ và sống lâu trăm tuổi bên con cháu. Bà chính là điểm tựa ấm áp và là tấm gương sáng cho cả gia đình mình!"
+            },
+            {
+                badge: "🌺 Gửi Các Cô, Thím",
+                title: "Chúc Các Cô & Thím Luôn Tươi Trẻ",
+                message: "Chúc Các Cô và Thím một ngày 20/10 thật nhiều hoa, quà và ngập tràn niềm vui! Chúc Các Cô, Thím luôn tươi trẻ, duyên dáng, gặt hái nhiều thành công trong công việc và giữ lửa hạnh phúc cho mái ấm gia đình!"
+            },
+            {
+                badge: "🌷 Gửi Các Bác Trân Quý",
+                title: "Kính Chúc Các Bác An Khang & Hạnh Phúc",
+                message: "Gửi lời chúc mừng ấm áp nhất đến Các Bác nhân ngày 20/10. Kính chúc Các Bác luôn an bình, nhiều sức khỏe, vạn sự như ý và có một ngày lễ trọn vẹn, rạng rỡ bên những người thân yêu!"
+            },
+            {
+                badge: "👭 Gửi Các Chị Em Gái",
+                title: "Chúc Chị Em Gái Luôn Rạng Rỡ & Yêu Đời",
+                message: "Chúc các chị em gái thân yêu ngày 20/10 thật xinh đẹp, tươi trẻ như hoa, luôn tràn đầy năng lượng tích cực, gặp nhiều may mắn và đạt được mọi ước mơ, mục tiêu trong cuộc sống!"
+            }
+        ];
+
+        let currentSceneIndex = 0;
+        const sceneContainers = document.querySelectorAll('.scene-container');
+        const sceneNameEl = document.getElementById('sceneName');
+        const sceneDotsContainer = document.getElementById('sceneDots');
+
+        // Initialize Scene Dots
+        scenes.forEach((_, idx) => {
+            const dot = document.createElement('div');
+            dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+            dot.onclick = () => goToScene(idx);
+            sceneDotsContainer.appendChild(dot);
+        });
+
+        function updateScene() {
+            sceneContainers.forEach((container, idx) => {
+                container.classList.toggle('active', idx === currentSceneIndex);
+            });
+            document.querySelectorAll('.dot').forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentSceneIndex);
+            });
+            sceneNameEl.innerText = scenes[currentSceneIndex].name;
+            initParticles();
+        }
+
+        function goToScene(index) {
+            currentSceneIndex = index;
+            updateScene();
+        }
+
+        document.getElementById('prevBtn').onclick = () => {
+            currentSceneIndex = (currentSceneIndex - 1 + scenes.length) % scenes.length;
+            updateScene();
+        };
+
+        document.getElementById('nextBtn').onclick = () => {
+            currentSceneIndex = (currentSceneIndex + 1) % scenes.length;
+            updateScene();
+        };
+
+        // Keyboard Navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+            if (e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+            if (e.key === 'Escape') closeCard();
+        });
+
+        // Open Gift Card
+        function openGift(giftIndex) {
+            const gift = giftMessages[giftIndex];
+            document.getElementById('modalBadge').innerText = gift.badge;
+            document.getElementById('modalTitle').innerText = gift.title;
+            document.getElementById('modalMessage').innerText = gift.message;
+            document.getElementById('cardModal').classList.add('active');
+            
+            // Burst fireworks effect on click
+            burstParticles();
+        }
+
+        function closeCard() {
+            document.getElementById('cardModal').classList.remove('active');
+        }
+
+        /* --- Particle Animation Canvas --- */
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function initParticles() {
+            particles = [];
+            const count = 60;
+            const sceneColor = scenes[currentSceneIndex].color;
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 4 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    speedY: Math.random() * 1.5 + 0.5,
+                    opacity: Math.random() * 0.7 + 0.3,
+                    color: sceneColor
+                });
+            }
+        }
+
+        function burstParticles() {
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    size: Math.random() * 6 + 3,
+                    speedX: (Math.random() - 0.5) * 12,
+                    speedY: (Math.random() - 0.5) * 12,
+                    opacity: 1,
+                    color: '#ff4081'
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, idx) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.y > canvas.height) p.y = 0;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.x < 0) p.x = canvas.width;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.opacity;
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        /* --- Simple Web Audio Synthesizer --- */
+        let audioCtx = null;
+        let isPlaying = false;
+        const audioBtn = document.getElementById('audioBtn');
+
+        audioBtn.onclick = () => {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            isPlaying = !isPlaying;
+            audioBtn.innerText = isPlaying ? "🔊" : "🎵";
+            
+            if (isPlaying) {
+                playLullaby();
+            }
+        };
+
+        function playLullaby() {
+            if (!isPlaying) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88];
+            const randomNote = notes[Math.floor(Math.random() * notes.length)];
+            
+            osc.frequency.value = randomNote;
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.5);
+            
+            setTimeout(playLullaby, 800);
+        }
+    </script>
+</body>
+</html>
